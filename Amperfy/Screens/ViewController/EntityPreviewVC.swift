@@ -488,7 +488,7 @@ class EntityPreviewActionBuilder {
       }
 
       // Create playlist: seed song + similar songs
-      var allSongs = [song] + similarSongs
+      let allSongs = [song] + similarSongs
 
       // Create play context and start playing
       let context = PlayContext(name: "Instant Mix: \(song.title)", playables: allSongs)

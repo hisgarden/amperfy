@@ -23,9 +23,17 @@ import CoreData
 import Foundation
 import UIKit
 
+// Thread-safety: NSManagedObjectContext operations are confined to the context's
+// queue via performAndWait; this box lets us pass a non-Sendable body through
+// a @Sendable-required closure boundary without changing every call site.
+private struct _UnsafeSendableBox<T>: @unchecked Sendable {
+  let value: T
+  init(_ value: T) { self.value = value }
+}
+
 // MARK: - CoreDataCompanion
 
-public class CoreDataCompanion {
+public class CoreDataCompanion: @unchecked Sendable {
   public let context: NSManagedObjectContext
   public let library: LibraryStorage
 
@@ -39,8 +47,9 @@ public class CoreDataCompanion {
   }
 
   public func perform(body: @escaping (_ asyncCompanion: CoreDataCompanion) -> ()) {
+    let boxedBody = _UnsafeSendableBox(body)
     context.performAndWait {
-      body(self)
+      boxedBody.value(self)
       library.saveContext()
     }
   }
