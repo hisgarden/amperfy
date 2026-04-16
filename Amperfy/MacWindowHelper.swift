@@ -22,11 +22,14 @@
 #if targetEnvironment(macCatalyst)
 
   import ObjectiveC
+  import OSLog
   import UIKit
 
   // NSWindow.Level.floating = 3, NSWindow.Level.normal = 0 https://developer.apple.com/documentation/appkit/nswindow/level-swift.struct
   private let nsWindowLevelFloating = 3
   private let nsWindowLevelNormal = 0
+
+  private let log = OSLog(subsystem: "Amperfy", category: "MacWindowHelper")
 
   enum MacWindowHelper {
     static func setAlwaysOnTop(
@@ -37,7 +40,14 @@
 
       guard let appClass = NSClassFromString("NSApplication")
         as? NSObject.Type
-      else { return }
+      else {
+        os_log(
+          "setAlwaysOnTop: NSApplication class lookup failed — AppKit bridge unavailable",
+          log: log,
+          type: .error
+        )
+        return
+      }
 
       let sharedApp = appClass
         .perform(NSSelectorFromString("sharedApplication"))?
@@ -47,7 +57,14 @@
             let nsWindows = (app as AnyObject)
             .perform(NSSelectorFromString("windows"))?
             .takeUnretainedValue() as? [AnyObject]
-      else { return }
+      else {
+        os_log(
+          "setAlwaysOnTop: sharedApplication or windows selector returned unexpected value",
+          log: log,
+          type: .error
+        )
+        return
+      }
 
       let setLevelSel = NSSelectorFromString("setLevel:")
 
@@ -61,7 +78,14 @@
         guard let method = class_getInstanceMethod(
           type(of: nsWindow),
           setLevelSel
-        ) else { continue }
+        ) else {
+          os_log(
+            "setAlwaysOnTop: setLevel: method lookup failed on matched window",
+            log: log,
+            type: .error
+          )
+          continue
+        }
 
         typealias SetLevelFunc = @convention(c)
           (AnyObject, Selector, Int) -> ()
