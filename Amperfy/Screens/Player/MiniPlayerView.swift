@@ -21,7 +21,6 @@
 
 import AmperfyKit
 import MarqueeLabel
-import MediaPlayer
 import UIKit
 
 // MARK: - MiniPlayerView
@@ -33,10 +32,6 @@ class MiniPlayerView: UIView {
   private var hoverOverlayView: UIView?
 
   static let mediumButtonSize: CGFloat = 20.0
-
-  #if targetEnvironment(macCatalyst) // ok
-    var airplayVolume: MPVolumeView?
-  #endif
 
   fileprivate lazy var artworkOverlay: UIView = {
     let view = UIView()
@@ -341,17 +336,22 @@ class MiniPlayerView: UIView {
     let button = UIButton(configuration: config)
     button.tintColor = .label
     button.addTarget(self, action: #selector(Self.airplayButtonPushed), for: .touchUpInside)
+    #if targetEnvironment(macCatalyst)
+      // AudioStreaming/AVAudioEngine ignores AVAudioSession routing on macOS,
+      // so MPVolumeView's picker can't actually retarget output here. Use the
+      // macOS menu bar / Control Center AirPlay instead.
+      button.isEnabled = false
+      button.addInteraction(UIToolTipInteraction(
+        defaultToolTip: "Use the macOS menu bar to select an AirPlay device."
+      ))
+    #endif
     return button
   }()
 
   @IBAction
   func airplayButtonPushed(_ sender: UIButton) {
-    #if targetEnvironment(macCatalyst) // ok
-      playerHandler?.airplayButtonPushed(
-        rootView: self,
-        airplayButton: airplayButton,
-        airplayVolume: airplayVolume
-      )
+    #if !targetEnvironment(macCatalyst)
+      playerHandler?.airplayButtonPushed(rootView: self, airplayButton: airplayButton)
     #endif
   }
 
@@ -549,17 +549,7 @@ class MiniPlayerView: UIView {
 
   init(player: PlayerFacade) {
     self.player = player
-
-    #if targetEnvironment(macCatalyst) // ok
-      self.airplayVolume = MPVolumeView(frame: .zero)
-      airplayVolume!.showsVolumeSlider = false
-      airplayVolume!.isHidden = true
-    #endif
-
     super.init(frame: .zero)
-    #if targetEnvironment(macCatalyst) // ok
-      addSubview(airplayVolume!)
-    #endif
 
     player.addNotifier(notifier: self)
 

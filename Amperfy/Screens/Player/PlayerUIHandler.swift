@@ -314,37 +314,21 @@ class PlayerUIHandler: NSObject {
 
   func airplayButtonPushed(
     rootView: UIView,
-    airplayButton: UIButton,
-    airplayVolume: MPVolumeView? = nil
+    airplayButton: UIButton
   ) {
     appDelegate.userStatistics.usedAction(.airplay)
 
-    #if targetEnvironment(macCatalyst) // ok
-      guard let airplayVolume else { return }
-      // Position the popup correctly on macOS
-      if let buttonCenter = airplayButton.superview?.convert(airplayButton.center, to: rootView) {
-        airplayVolume.center = buttonCenter
+    let rect = CGRect(x: -100, y: 0, width: 0, height: 0)
+    let airplayVolume = MPVolumeView(frame: rect)
+    airplayVolume.showsVolumeSlider = false
+    rootView.addSubview(airplayVolume)
+    for view: UIView in airplayVolume.subviews {
+      if let button = view as? UIButton {
+        button.sendActions(for: .touchUpInside)
+        break
       }
-
-      for view: UIView in airplayVolume.subviews {
-        if let button = view as? UIButton {
-          button.sendActions(for: .touchUpInside)
-          break
-        }
-      }
-    #else
-      let rect = CGRect(x: -100, y: 0, width: 0, height: 0)
-      let airplayVolume = MPVolumeView(frame: rect)
-      airplayVolume.showsVolumeSlider = false
-      rootView.addSubview(airplayVolume)
-      for view: UIView in airplayVolume.subviews {
-        if let button = view as? UIButton {
-          button.sendActions(for: .touchUpInside)
-          break
-        }
-      }
-      airplayVolume.removeFromSuperview()
-    #endif
+    }
+    airplayVolume.removeFromSuperview()
   }
 
   var isLyricsButtonAllowedToDisplay: Bool {
