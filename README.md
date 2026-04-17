@@ -1,4 +1,6 @@
-# ![Logo](.github/Icon-40.png) Amperfy
+# ![Logo](.github/Icon-40.png) Amperfy (hisgarden fork)
+
+> Fork of [Amperfy by BLeeEZ](https://github.com/BLeeEZ/amperfy) — personal Mac Catalyst build signed with a personal Apple Developer team and distributed via a Homebrew tap. CarPlay/Siri entitlements are stripped for self-signing; everything else matches upstream.
 
 ## Basics
 
@@ -6,19 +8,26 @@ Amperfy is an iOS/iPadOS/macOS app written in Swift to interact with an [Ampache
 
 ### iOS
 
-<a href="https://apps.apple.com/app/amperfy-music/id1530145038#?platform=iphone">
-  <img src=".github/AppStore/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" height="45" />
-</a>
-
 <img src=".github/Screenshots/Player.jpg" width="250" alt="Screenshot of the Amperfy player" /> &nbsp;
 <img src=".github/Screenshots/AlbumDetail.jpg" width="250" alt="Screenshot of the Amperfy artist detail view" /> &nbsp;
 <img src=".github/Screenshots/Library.jpg" width="250" alt="Screenshot of the Amperfy library view" />
 
-### macOS
+> iOS install is not provided by this fork. For the App Store iOS build, see [upstream Amperfy](https://github.com/BLeeEZ/amperfy#readme).
 
-<a href="https://apps.apple.com/app/amperfy-music/id1530145038#?platform=mac">
-  <img src=".github/AppStore/Download_on_the_Mac_App_Store_Badge_US-UK_RGB_blk_092917.svg" height="45" />
-</a>
+### macOS (Homebrew)
+
+```
+brew tap hisgarden/amperfy
+brew install --cask amperfy
+```
+
+First launch (Gatekeeper, unnotarized personal signature): right-click `Amperfy.app` in `/Applications` → **Open** → **Open** again. Or:
+
+```
+xattr -d com.apple.quarantine /Applications/Amperfy.app
+```
+
+See [releases](https://github.com/hisgarden/amperfy/releases) for changelog.
 
 <img src=".github/Screenshots/macOS-Playlist.png" width="750" alt="Screenshot of the Amperfy playlist view in macOS" />
 
@@ -26,10 +35,10 @@ Amperfy is an iOS/iPadOS/macOS app written in Swift to interact with an [Ampache
 
 - Multi account
 - Offline mode
-- CarPlay
+- CarPlay *(upstream only — stripped in this fork's entitlements)*
 - Gapless playback for appropriate media file formats
 - Music, Podcast and Radio support
-- Siri play media command, Siri Shortcuts and App Intents
+- Siri play media command, Siri Shortcuts and App Intents *(upstream only — stripped in this fork's entitlements)*
 - Equalizer
 - Replay gain
 - Sleep timer
@@ -46,7 +55,7 @@ Amperfy is an iOS/iPadOS/macOS app written in Swift to interact with an [Ampache
 
 1. Check out the latest version of the project:
   ```
-  git clone https://github.com/BLeeEZ/amperfy.git
+  git clone https://github.com/hisgarden/amperfy.git
   cd amperfy
   ```
 
@@ -54,11 +63,11 @@ Amperfy is an iOS/iPadOS/macOS app written in Swift to interact with an [Ampache
 
 4. Build and run the "Amperfy" scheme
 
-  >Real device testing: Amperfy has Apple CarPlay and Siri support. To test it on a real device a developer certificate with granted access to `com.apple.developer.playable-content` and `com.apple.developer.siri` is required. To test Amperfy without Apple CarPlay and Siri clear all entries in `Amperfy/Amperfy.entitlements`.
+  >CarPlay and Siri entitlements are already stripped in this fork (commit `9c5e97ce`) so the project signs with a personal Apple Developer team out of the box. To restore those features you need a developer certificate with granted access to `com.apple.developer.playable-content` and `com.apple.developer.siri`, and must re-add the corresponding keys to `Amperfy/Amperfy.entitlements`.
 
-## Beta test releases
+## Releases
 
-For more information, and to participate in the public beta releases, please visit [Amperfy Beta](https://github.com/BLeeEZ/amperfy/issues/25).
+Tap releases for this fork are published at [github.com/hisgarden/amperfy/releases](https://github.com/hisgarden/amperfy/releases). Upstream beta testing is tracked at [Amperfy Beta](https://github.com/BLeeEZ/amperfy/issues/25).
 
 ## Contribution
 
@@ -80,6 +89,6 @@ Pull requests are always welcome. Please execute `AmperfyKitTests` to ensure cod
 - [swift-collections](https://github.com/apple/swift-collections) by [Apple](https://github.com/apple) is licensed under [Apache License 2.0](https://github.com/apple/swift-collections/blob/main/LICENSE.txt)
 - [iOS-swiftUI-spotify-equalizer](https://github.com/urvi-k/iOS-swiftUI-spotify-equalizer) by [urvi koladiya](https://github.com/urvi-k) is licensed under [MIT License](https://github.com/urvi-k/iOS-swiftUI-spotify-equalizer/blob/main/LICENSE)
 
-**Amperfy license:** [GPLv3](https://github.com/BLeeEZ/Amperfy/blob/master/LICENSE)
+**Amperfy license:** [GPLv3](https://github.com/hisgarden/amperfy/blob/master/LICENSE)
 
-**Special thanks:** [Dirk Hildebrand](https://apps.apple.com/us/developer/dirk-hildebrand/id654444924)
+**Special thanks:** [Dirk Hildebrand](https://apps.apple.com/us/developer/dirk-hildebrand/id654444924) (upstream App Store maintainer)
