@@ -1,6 +1,6 @@
 # ![Logo](.github/Icon-40.png) Amperfy (hisgarden fork)
 
-> Fork of [Amperfy by BLeeEZ](https://github.com/BLeeEZ/amperfy) — personal Mac Catalyst build signed with a personal Apple Developer team and distributed via a Homebrew tap. CarPlay/Siri entitlements are stripped for self-signing; everything else matches upstream.
+> Fork of [Amperfy by BLeeEZ](https://github.com/BLeeEZ/amperfy) — Mac Catalyst build signed with a Developer ID certificate, notarized by Apple, and distributed via a Homebrew tap. CarPlay/Siri entitlements are stripped (personal Developer account can't issue them); everything else matches upstream.
 
 ## Basics
 
@@ -21,11 +21,7 @@ brew tap hisgarden/amperfy
 brew install --cask amperfy
 ```
 
-First launch (Gatekeeper, unnotarized personal signature): right-click `Amperfy.app` in `/Applications` → **Open** → **Open** again. Or:
-
-```
-xattr -d com.apple.quarantine /Applications/Amperfy.app
-```
+Signed with a Developer ID certificate and notarized by Apple — installs cleanly, no Gatekeeper workaround needed.
 
 See [releases](https://github.com/hisgarden/amperfy/releases) for changelog.
 
