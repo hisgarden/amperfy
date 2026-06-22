@@ -45,6 +45,10 @@ final class SubsonicArtworkDownloadDelegate: DownloadManagerDelegate {
     2
   }
 
+  var httpHeaders: [String: String] {
+    subsonicServerApi.httpHeaders
+  }
+
   @MainActor
   func prepareDownload(
     downloadInfo: DownloadElementInfo,

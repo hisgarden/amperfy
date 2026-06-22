@@ -47,6 +47,11 @@ class ContextQueueNextSectionHeader: UIView {
   weak var shuffleButton: UIButton!
   @IBOutlet
   weak var repeatButton: UIButton!
+  @IBOutlet
+  weak var autoMixButton: UIButton!
+
+  @IBOutlet
+  weak var autoMixingTrailingConstraing: NSLayoutConstraint!
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -65,8 +70,35 @@ class ContextQueueNextSectionHeader: UIView {
   func refresh() {
     contextNameLabel.text = "\(player.contextName)"
     refreshCurrentlyPlayingInfo()
+    configureAutoMixingButtonPosition()
     playerHandler?.refreshRepeatButton(repeatButton: repeatButton)
     playerHandler?.refreshShuffleButton(shuffleButton: shuffleButton)
+    playerHandler?.refreshAutoMixButton(autoMixButton: autoMixButton)
+  }
+
+  func configureAutoMixingButtonPosition() {
+    autoMixingTrailingConstraing.isActive = false
+    #if targetEnvironment(macCatalyst)
+      if appDelegate.isShowingMiniPlayer {
+        autoMixingTrailingConstraing = autoMixButton.trailingAnchor.constraint(
+          equalTo: shuffleButton.leadingAnchor,
+          constant: -8.0
+        )
+      } else {
+        autoMixingTrailingConstraing = autoMixButton.trailingAnchor.constraint(
+          equalTo: safeAreaLayoutGuide.trailingAnchor,
+          constant: -8.0
+        )
+      }
+    #else
+      autoMixingTrailingConstraing = autoMixButton.trailingAnchor.constraint(
+        equalTo: shuffleButton.leadingAnchor,
+        constant: -8.0
+      )
+    #endif
+    NSLayoutConstraint.activate([
+      autoMixingTrailingConstraing,
+    ])
   }
 
   func refreshCurrentlyPlayingInfo() {
@@ -74,9 +106,11 @@ class ContextQueueNextSectionHeader: UIView {
     case .music:
       repeatButton.isHidden = false
       shuffleButton.isHidden = false
+      autoMixButton.isHidden = false
     case .podcast:
       repeatButton.isHidden = true
       shuffleButton.isHidden = true
+      autoMixButton.isHidden = true
     }
   }
 
@@ -91,6 +125,12 @@ class ContextQueueNextSectionHeader: UIView {
   func pressedRepeat(_ sender: Any) {
     playerHandler?.repeatButtonPushed()
     playerHandler?.refreshRepeatButton(repeatButton: repeatButton)
+  }
+
+  @IBAction
+  func pressedAutoMix(_ sender: Any) {
+    playerHandler?.autoMixButtonPushed()
+    playerHandler?.refreshAutoMixButton(autoMixButton: autoMixButton)
   }
 }
 

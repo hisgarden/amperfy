@@ -49,6 +49,10 @@ final class PlayableDownloadDelegate: DownloadManagerDelegate {
     4
   }
 
+  var httpHeaders: [String: String] {
+    backendApi.httpHeaders
+  }
+
   @MainActor
   func prepareDownload(
     downloadInfo: DownloadElementInfo,

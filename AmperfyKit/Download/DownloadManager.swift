@@ -155,7 +155,11 @@ actor DownloadManager: NSObject, DownloadManageable {
       object: nil
     )
     Task {
-      await _initialize(urlSession: urlSession, isCheckForCachedNeeded: isCheckForCachedNeeded, validationCB: validationCB)
+      await _initialize(
+        urlSession: urlSession,
+        isCheckForCachedNeeded: isCheckForCachedNeeded,
+        validationCB: validationCB
+      )
     }
   }
 
@@ -164,7 +168,11 @@ actor DownloadManager: NSObject, DownloadManageable {
     _urlSessionIdentifier
   }
 
-  private func _initialize(urlSession: URLSession, isCheckForCachedNeeded: Bool, validationCB: PreDownloadIsValidCB?) {
+  private func _initialize(
+    urlSession: URLSession,
+    isCheckForCachedNeeded: Bool,
+    validationCB: PreDownloadIsValidCB?
+  ) {
     self.urlSession = urlSession
     let ident = self.urlSession?.configuration.identifier
     preDownloadIsValidCheck = validationCB
@@ -390,7 +398,12 @@ actor DownloadManager: NSObject, DownloadManageable {
         downloadInfo: downloadRequest.info,
         storage: storage
       )
-      let downloadTaskInfo = DownloadTaskInfo(request: downloadRequest, url: url)
+      let httpHeaders = await getDownloadDelegateCB().httpHeaders
+      let downloadTaskInfo = DownloadTaskInfo(
+        request: downloadRequest,
+        url: url,
+        httpHeaders: httpHeaders
+      )
       fetch(downloadTaskInfo: downloadTaskInfo)
     } catch {
       if let fetchError = error as? DownloadError {

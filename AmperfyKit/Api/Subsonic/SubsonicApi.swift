@@ -62,6 +62,10 @@ extension SubsonicApi: BackendApi {
     subsonicServerApi.serverApiVersion.wrappedValue?.description ?? "-"
   }
 
+  public var httpHeaders: [String: String] {
+    subsonicServerApi.httpHeaders
+  }
+
   func provideCredentials(credentials: LoginCredentials) {
     subsonicServerApi.provideCredentials(credentials: credentials)
   }

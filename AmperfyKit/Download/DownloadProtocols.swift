@@ -60,6 +60,7 @@ public protocol DownloadManageable {
 public protocol DownloadManagerDelegate: Sendable {
   var requestPredicate: NSPredicate { get }
   var parallelDownloadsCount: Int { get }
+  var httpHeaders: [String: String] { get }
   func prepareDownload(
     downloadInfo: DownloadElementInfo,
     storage: AsyncCoreDataAccessWrapper

@@ -141,8 +141,13 @@ extension UIButton.Configuration {
       config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
     }
     config.buttonSize = .small
-    config.baseForegroundColor = !isSelected ? .label : .systemBackground
-    config.baseBackgroundColor = !isSelected ? .clear : .label
+    #if targetEnvironment(macCatalyst)
+      config.baseForegroundColor = .label
+      config.baseBackgroundColor = .clear
+    #else
+      config.baseForegroundColor = !isSelected ? .label : .systemBackground
+      config.baseBackgroundColor = !isSelected ? .clear : .label
+    #endif
     config.cornerStyle = .medium
     return config
   }

@@ -85,6 +85,10 @@ class PlayerUIHandler: NSObject {
     player.setRepeatMode(player.repeatMode.nextMode)
   }
 
+  func autoMixButtonPushed() {
+    appDelegate.storage.settings.user.isAutoMixAfterEnd.toggle()
+  }
+
   func refreshPlayButton(_ button: UIButton) {
     var buttonImg = UIImage()
     if player.isPlaying {
@@ -194,8 +198,14 @@ class PlayerUIHandler: NSObject {
       repeatButton.backgroundColor = isSelected ? .tintColor.withAlphaComponent(0.2) : .clear
     case .popupPlayer:
       var config = UIButton.Configuration.player(isSelected: isSelected)
-      config.image = image
+      config.image = image?
+        .withConfiguration(UIImage.SymbolConfiguration(scale: .medium))
       repeatButton.configuration = config
+      #if targetEnvironment(macCatalyst)
+        repeatButton.isHidden = !appDelegate.isShowingMiniPlayer
+      #else
+        repeatButton.isHidden = false
+      #endif
     }
     repeatButton.isSelected = isSelected
   }
@@ -210,10 +220,35 @@ class PlayerUIHandler: NSObject {
     case .popupPlayer:
       var config = UIButton.Configuration.player(isSelected: player.isShuffle)
       config.image = .shuffle
+        .withConfiguration(UIImage.SymbolConfiguration(scale: .medium))
       shuffleButton.configuration = config
+      #if targetEnvironment(macCatalyst)
+        shuffleButton.isHidden = !appDelegate.isShowingMiniPlayer
+      #else
+        shuffleButton.isHidden = false
+      #endif
     }
     shuffleButton.isEnabled = appDelegate.storage.settings.user.isPlayerShuffleButtonEnabled
     shuffleButton.isSelected = player.isShuffle
+  }
+
+  func refreshAutoMixButton(autoMixButton: UIButton) {
+    let isActive = appDelegate.storage.settings.user.isAutoMixAfterEnd
+
+    switch style {
+    case .miniPlayeriOS, .miniPlayerMac:
+      autoMixButton.configuration?.image = .infinity
+        .withConfiguration(UIImage.SymbolConfiguration(scale: .medium))
+      autoMixButton.tintColor = isActive ? .tintColor : .secondaryLabel
+      autoMixButton.backgroundColor = isActive ? .tintColor.withAlphaComponent(0.2) : .clear
+    case .popupPlayer:
+      var config = UIButton.Configuration.player(isSelected: isActive)
+      config.image = .infinity
+        .withConfiguration(UIImage.SymbolConfiguration(scale: .medium))
+      autoMixButton.configuration = config
+    }
+    autoMixButton.isEnabled = player.playerMode == .music
+    autoMixButton.isSelected = isActive
   }
 
   func refreshDisplayPlaylistButton(displayPlaylistButton: UIButton) {

@@ -88,12 +88,15 @@ struct PlayerSettingsView: View {
         )
 
         // General Settings
-        SettingsSection {
-          SettingsCheckBoxRow(
-            title: "Auto cache played Songs",
-            isOn: $settings.isPlayerAutoCachePlayedItems
-          )
-        }
+        SettingsSection(
+          content: {
+            SettingsCheckBoxRow(
+              title: "Auto-cache played tracks and download upcoming ones",
+              isOn: $settings.isPlayerAutoCachePlayedItems
+            )
+          },
+          footer: "Played tracks (songs and podcast episodes) are cached automatically. The next \(PlayerDownloadPreparationHandler.preDownloadCount) tracks are downloaded in advance."
+        )
 
         SettingsSection(
           content: {

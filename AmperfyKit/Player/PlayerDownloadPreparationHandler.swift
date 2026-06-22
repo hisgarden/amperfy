@@ -24,8 +24,8 @@ import Foundation
 // MARK: - PlayerDownloadPreparationHandler
 
 @MainActor
-class PlayerDownloadPreparationHandler {
-  static let preDownloadCount = 3
+public class PlayerDownloadPreparationHandler {
+  static public let preDownloadCount = 3
 
   private var playerStatus: PlayerStatusPersistent
   private var queueHandler: PlayQueueHandler
@@ -75,16 +75,19 @@ class PlayerDownloadPreparationHandler {
 // MARK: MusicPlayable
 
 extension PlayerDownloadPreparationHandler: MusicPlayable {
-  func didStartPlayingFromBeginning() {
+  public func didStartPlayingFromBeginning() {
     if playerStatus.isAutoCachePlayedItems {
       preDownloadNextItems()
     }
   }
 
-  func didStartPlaying() {}
-  func didPause() {}
-  func didStopPlaying() {}
-  func didElapsedTimeChange() {}
-  func didPlaylistChange() {}
-  func didArtworkChange() {}
+  public func didStartPlaying() {}
+  public func didPause() {}
+  public func didStopPlaying() {}
+  public func didElapsedTimeChange() {}
+  public func didPlaylistChange() {}
+  public func didArtworkChange() {}
+  public func didPlaybackRateChange() {}
+  public func didRepeatChange() {}
+  public func didShuffleChange() {}
 }

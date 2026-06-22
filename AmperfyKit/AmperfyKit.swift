@@ -157,9 +157,9 @@ public class AmperKit {
     playerAudioSessionHandler!.eventLogger = eventLogger
     playerAudioSessionHandler!.configureObserverForAudioSessionInterruption()
     backendAudioPlayer.triggerReinsertPlayableCB = curPlayer.play
-    curPlayer.autoInstantMixCB = { [weak self] song in
+    curPlayer.autoMixCB = { [weak self] song in
       guard let self, let accountInfo = song.account?.info else { return [] }
-      return try await self.getMeta(accountInfo).librarySyncer.requestSimilarSongs(
+      return try await getMeta(accountInfo).librarySyncer.requestSimilarSongs(
         song: song,
         count: 99
       )
